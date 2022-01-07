@@ -6,8 +6,8 @@ https://concourse-ci.org/getting-started.html
 ## Hello World Pipeline
 The simplest Concourse pipeline is made of two objects:
 
-- An unordered list of Jobs which contains...
-- An ordered list of Steps
+- An unordered list of `Jobs` which contains...
+- An ordered list of `Steps`
 
 The order of the jobs does not matter. **The order of jobs does not define the structure of the pipeline**
 
@@ -23,3 +23,13 @@ So if you have a job with five steps Concourse will create five containers, one 
 - What container image to use (Linux only)
 
 - What command to run inside the container
+
+## Inputs and Outputs
+Inputs and outputs are directories that get passed between steps. We'll refer to both inputs and outputs as **artifacts.**
+
+Add a `task.config.outputs` element
+
+Concourse makes output directories for you and will pass any contents inside the folder onto later steps.
+
+### Passing outputs to another task
+To pass artifacts from one task to another, the first task must declare the artifact as an `output`. The second task must then declare the *same* artifact as an `input`.
