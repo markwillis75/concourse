@@ -33,3 +33,9 @@ Concourse makes output directories for you and will pass any contents inside the
 
 ### Passing outputs to another task
 To pass artifacts from one task to another, the first task must declare the artifact as an `output`. The second task must then declare the *same* artifact as an `input`.
+
+### How does Concourse track artifacts
+- Concourse runs the task step `output-task` with output named `the-artifact`
+- Concourse creates an empty artifact, assigns it the name `the-artifact`, and mounts it inside the task container.
+- Concourse runs the task step `input-task` with input `the-artifact`
+- Concourse looks up, in its list of artifacts for the build, for an artifact named `the-artifact`, and mounts it inside the task container. **If no input with that name is found then the build would fail.**
