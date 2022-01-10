@@ -3,6 +3,44 @@ https://concourse-ci.org/getting-started.html
 
 ---
 
+## Prerequisites
+
+### Docker Compose Concourse
+```bash
+curl -O https://concourse-ci.org/docker-compose.yml \
+  && docker-compose up -d
+```
+
+### Install Fly
+```bash
+curl 'http://localhost:8080/api/v1/cli?arch=amd64&platform=darwin' -o fly \
+  && chmod +x ./fly && mv ./fly /usr/local/bin/
+```
+
+---
+
+## Fly Commands
+
+`deploy a pipeline`
+```bash
+fly -t <target-instance> set-pipeline -p <pipeline-name> -c <config-file>
+
+  e.g.
+    fly -t tutorial set-pipeline -p hello-world -c 01_hello_world/hello-world-pipeline.yml
+```
+
+`unpause the pipeline`
+``` bash
+fly -t tutorial unpause-pipeline -p hello-world
+```
+
+`run the pipeline`
+```bash
+fly -t tutorial trigger-job --job hello-world/hello-world-job --watch
+```
+
+---
+
 ## Hello World Pipeline
 The simplest Concourse pipeline is made of two objects:
 
