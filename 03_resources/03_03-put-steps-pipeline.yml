@@ -1,0 +1,47 @@
+resources:
+- name: repo
+  type: git
+  source: 
+    uri: https://github.com/markwillis75/concourse-examples.git
+    branch: master
+    # username and password are deprecated - use personal access token
+    # https://serverascode.com/2020/08/17/personal-access-token-concourse.html
+    # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+    username: <your personal access token>
+    password: x-oauth-basic
+
+jobs:
+  - name: hello-world-job
+    plan: 
+    - get: repo
+      trigger: true
+    - task: hello-world-task
+      config:
+        platform: linux
+        image_resource: 
+          type: registry-image
+          source: 
+            repository: gitea/gitea
+        inputs:
+        - name: repo
+        # output repo so that it can be used in the put step
+        outputs:
+        - name: repo
+        params:
+          EMAIL: bob@jones.com
+          GIT_AUTHOR_NAME: bob.jones
+        run:
+          path: sh
+          args:
+          - -cx
+          - |
+            cd repo
+            git pull
+            date > todays-date
+            git add .
+            git config --global user.email $EMAIL
+            git config --global user.name $GIT_AUTHOR_NAME
+            git commit -m "Update todays date"
+    - put: repo
+      params:
+        repository: repo

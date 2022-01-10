@@ -1,0 +1,28 @@
+resources:
+- name: repo
+  type: git
+  source: 
+    uri: https://github.com/markwillis75/concourse-examples
+    
+
+jobs:
+  - name: hello-world-job
+    plan: 
+    - get: repo
+      trigger: true
+    - task: hello-world-task
+      config:
+        platform: linux
+        image_resource: 
+          type: registry-image
+          source: 
+            repository: busybox
+        # The git resource type creates an artifact/folder with the same name as the name of the resource
+        # In this case, that is an artifact named 'repo'
+        # In that artifact is the cloned contents of the git repo
+        inputs:
+        - name: repo
+        # cat the contents of the README.md file cloned from the git repo
+        run:
+          path: cat
+          args: ["repo/README.md"]
